@@ -50,11 +50,14 @@
         /* --- Base & Techno Theme --- */
         body {
             background-color: #020617;
-            /* Deep Techno Blue Gradient */
             background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #020617 60%);
             color: #f1f5f9;
             overflow-x: hidden;
-            cursor: none; /* Hide default cursor */
+            /* cursor: none;  Kept mostly for desktop, fallback for touch */
+        }
+        
+        @media (pointer: fine) {
+            body { cursor: none; }
         }
 
         /* --- Custom Cursor --- */
@@ -82,7 +85,6 @@
             transition: width 0.2s, height 0.2s, background-color 0.2s;
         }
 
-        /* Hover effect for links/buttons */
         body.hovering .cursor-outline {
             width: 60px;
             height: 60px;
@@ -105,7 +107,7 @@
         .reveal-on-scroll {
             opacity: 0;
             transform: translateY(40px);
-            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); /* Smoother cubic bezier */
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .reveal-on-scroll.is-visible {
@@ -113,23 +115,41 @@
             transform: translateY(0);
         }
 
-        /* --- Text Rotator Effects (Sleek Slide) --- */
+        /* --- Page Transitions --- */
+        .page-section {
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+        .page-hidden {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .page-visible {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+            animation: fadeInPage 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeInPage {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Text Rotator Effects --- */
         .word-rotate {
             display: inline-block;
             transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
         }
-        
         .word-rotate.slide-out {
             opacity: 0;
-            transform: translateY(-40px); /* Goes UP */
+            transform: translateY(-40px);
         }
-        
         .word-rotate.slide-in-prep {
             opacity: 0;
-            transform: translateY(40px); /* Starts from DOWN */
+            transform: translateY(40px);
             transition: none;
         }
-        
         .word-rotate.slide-in {
             opacity: 1;
             transform: translateY(0);
@@ -140,14 +160,14 @@
             background: rgba(15, 23, 42, 0.4);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(59, 130, 246, 0.1); /* Blue tint border */
+            border: 1px solid rgba(59, 130, 246, 0.1);
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
             transition: all 0.4s ease;
         }
 
         .glass-card:hover {
             transform: translateY(-8px);
-            border-color: rgba(6, 182, 212, 0.4); /* Cyan highlight */
+            border-color: rgba(6, 182, 212, 0.4);
             box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
         }
 
@@ -269,19 +289,19 @@
     <!-- Navigation -->
     <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 py-4 border-b border-transparent">
         <div class="container mx-auto px-6 flex justify-between items-center">
-            <!-- 5. Logo Updated to SmartMediaPoint -->
-            <a href="#" class="text-2xl font-display font-bold tracking-tight z-50 relative group">
-                <img src="https://i.ibb.co/DHZYcfMX/FREE-TRENDING-PROMPTS-LOGO.png" alt="logo">
+            <a href="#" onclick="showHome()" class="text-2xl font-display font-bold tracking-tight z-50 relative group nav-link">
+                Smart<span class="text-brand-techno group-hover:text-brand-cyan transition-colors">MediaPoint</span>
+                <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-brand-cyan transition-all group-hover:w-full"></span>
             </a>
             
             <div class="hidden md:flex space-x-8 text-sm font-tech font-semibold text-slate-300">
-                <a href="#about" class="hover:text-brand-cyan transition-colors nav-link">About</a>
-                <a href="#plans" class="hover:text-brand-cyan transition-colors nav-link">Packages</a>
-                <a href="#testimonials" class="hover:text-brand-cyan transition-colors nav-link">Reviews</a>
-                <a href="#contact" class="hover:text-brand-cyan transition-colors nav-link">Contact</a>
+                <a href="#about" onclick="showHome()" class="hover:text-brand-cyan transition-colors nav-link">About</a>
+                <a href="#plans" onclick="showHome()" class="hover:text-brand-cyan transition-colors nav-link">Packages</a>
+                <a href="#testimonials" onclick="showHome()" class="hover:text-brand-cyan transition-colors nav-link">Reviews</a>
+                <a href="#contact" onclick="showHome()" class="hover:text-brand-cyan transition-colors nav-link">Contact</a>
             </div>
 
-            <a href="#plans" class="hidden md:inline-block px-6 py-2 rounded-full border border-brand-techno/50 text-brand-techno font-semibold text-sm hover:bg-brand-techno hover:text-white transition-all shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:shadow-[0_0_25px_rgba(59,130,246,0.6)] nav-link">
+            <a href="#plans" onclick="showHome()" class="hidden md:inline-block px-6 py-2 rounded-full border border-brand-techno/50 text-brand-techno font-semibold text-sm hover:bg-brand-techno hover:text-white transition-all shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:shadow-[0_0_25px_rgba(59,130,246,0.6)] nav-link">
                 Get Started
             </a>
 
@@ -292,318 +312,372 @@
         </div>
         
         <!-- Mobile Menu -->
-        <div id="mobileMenu" class="hidden absolute top-full left-0 w-full bg-[#020617]/95 backdrop-blur-xl border-b border-white/10 p-6 flex-col space-y-4 md:hidden text-center">
-            <a href="#about" class="block text-slate-300 hover:text-brand-cyan">About</a>
-            <a href="#plans" class="block text-slate-300 hover:text-brand-cyan">Packages</a>
-            <a href="#testimonials" class="block text-slate-300 hover:text-brand-cyan">Reviews</a>
-            <a href="#contact" class="block text-brand-techno font-bold">Get Started</a>
+        <div id="mobileMenu" class="hidden absolute top-full left-0 w-full bg-[#020617]/95 backdrop-blur-xl border-b border-white/10 p-6 flex-col space-y-4 md:hidden text-center z-40">
+            <a href="#about" onclick="showHome()" class="block text-slate-300 hover:text-brand-cyan">About</a>
+            <a href="#plans" onclick="showHome()" class="block text-slate-300 hover:text-brand-cyan">Packages</a>
+            <a href="#testimonials" onclick="showHome()" class="block text-slate-300 hover:text-brand-cyan">Reviews</a>
+            <a href="#contact" onclick="showHome()" class="block text-brand-techno font-bold">Get Started</a>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <header class="relative pt-36 pb-12 lg:pt-52 lg:pb-24 px-6 overflow-hidden">
-        <div class="container mx-auto text-center relative z-10 reveal-on-scroll">
-            <div class="inline-block mb-6 px-4 py-1 rounded-full border border-brand-techno/30 bg-brand-techno/10 backdrop-blur-sm reveal-on-scroll" style="transition-delay: 100ms;">
-                <span class="text-xs font-bold font-tech tracking-wider text-brand-cyan uppercase"><i class="fa-solid fa-bolt mr-2"></i>Next Gen SMM Panel</span>
-            </div>
-            
-            <h1 class="text-5xl md:text-7xl font-display font-extrabold mb-6 leading-tight reveal-on-scroll" style="transition-delay: 200ms;">
-                Skyrocket Your <br>
-                <!-- 4. Sleek Hero Text Transition -->
-                <span class="inline-block relative h-[1.2em] overflow-hidden align-middle">
-                     <span id="text-rotator" class="text-transparent bg-clip-text bg-gradient-to-r from-brand-techno via-brand-cyan to-brand-purple word-rotate">Social Proof</span>
-                </span>
-            </h1>
-            
-            <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed font-light reveal-on-scroll" style="transition-delay: 300ms;">
-                We engineer digital status. Impress clients, attract sponsors, and command authority with our premium growth algorithms.
-            </p>
-            
-            <div class="flex flex-col sm:flex-row justify-center gap-4 reveal-on-scroll" style="transition-delay: 400ms;">
-                <a href="#plans" class="px-8 py-4 rounded-full bg-gradient-to-r from-brand-techno to-brand-cyan text-white font-bold text-lg hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] transition-all transform hover:-translate-y-1 nav-link">
-                    Explore Plans
-                </a>
-                <a href="#about" class="px-8 py-4 rounded-full border border-slate-700 bg-slate-900/50 text-white font-semibold text-lg hover:bg-slate-800 transition-colors backdrop-blur-sm nav-link">
-                    How it Works
-                </a>
-            </div>
-
-            <!-- 2. Dynamic Count-Up Live Ticker -->
-            <div class="mt-16 flex flex-wrap justify-center gap-6 md:gap-16 text-slate-400 font-tech text-sm uppercase tracking-widest reveal-on-scroll" style="transition-delay: 500ms;">
-                <div class="flex flex-col items-center p-4 bg-white/5 rounded-xl border border-white/5 backdrop-blur-sm min-w-[150px]">
-                    <div class="flex items-center space-x-2 mb-2">
-                        <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-                        <span class="text-xs text-slate-500">Live Followers</span>
-                    </div>
-                    <span id="ticker-followers" class="text-2xl text-white font-bold tracking-tight">100,000</span>
-                </div>
-                <div class="flex flex-col items-center p-4 bg-white/5 rounded-xl border border-white/5 backdrop-blur-sm min-w-[150px]">
-                     <div class="flex items-center space-x-2 mb-2">
-                        <span class="w-2 h-2 rounded-full bg-brand-techno animate-pulse"></span>
-                        <span class="text-xs text-slate-500">Live Likes</span>
-                    </div>
-                    <span id="ticker-likes" class="text-2xl text-white font-bold tracking-tight">5,000,000</span>
-                </div>
-                <div class="flex flex-col items-center p-4 bg-white/5 rounded-xl border border-white/5 backdrop-blur-sm min-w-[150px]">
-                     <div class="flex items-center space-x-2 mb-2">
-                        <span class="w-2 h-2 rounded-full bg-brand-cyan animate-pulse"></span>
-                        <span class="text-xs text-slate-500">Live Views</span>
-                    </div>
-                    <span id="ticker-views" class="text-2xl text-white font-bold tracking-tight">10,000,000</span>
-                </div>
-            </div>
-
-            <!-- Stats Counter (Static Highlights) -->
-            <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-white/5 pt-12 backdrop-blur-sm rounded-2xl mx-auto max-w-5xl reveal-on-scroll" style="transition-delay: 600ms;">
-                <div class="p-4">
-                    <div class="text-3xl md:text-4xl font-bold text-white mb-1 counter font-tech" data-target="1000" data-suffix="+">0</div>
-                    <div class="text-sm text-brand-cyan uppercase tracking-wide font-semibold">Happy Clients</div>
-                </div>
-                <div class="p-4">
-                    <div class="text-3xl md:text-4xl font-bold text-white mb-1 counter font-tech" data-target="50" data-suffix="+">0</div>
-                    <div class="text-sm text-brand-cyan uppercase tracking-wide font-semibold">Million Likes</div>
-                </div>
-                <div class="p-4">
-                    <div class="text-3xl md:text-4xl font-bold text-white mb-1 counter font-tech" data-target="24" data-suffix="+">0</div>
-                    <div class="text-sm text-brand-cyan uppercase tracking-wide font-semibold">Hour Delivery</div>
-                </div>
-                <div class="p-4">
-                    <div class="text-3xl md:text-4xl font-bold text-white mb-1 counter font-tech" data-target="100" data-suffix="%">0</div>
-                    <div class="text-sm text-brand-cyan uppercase tracking-wide font-semibold">Confidential</div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Decorative Glows -->
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-brand-techno rounded-full blur-[150px] opacity-10 -z-10 animate-pulse-fast"></div>
-    </header>
-
-    <!-- About Section -->
-    <section id="about" class="py-24 px-6 relative">
-        <div class="container mx-auto">
-            <div class="grid md:grid-cols-2 gap-16 items-center">
-                <div class="relative reveal-on-scroll">
-                    <div class="glass-card p-8 rounded-2xl relative z-10 border-l-4 border-brand-cyan">
-                        <i class="fa-solid fa-layer-group text-4xl text-brand-cyan mb-6"></i>
-                        <h3 class="text-2xl font-bold mb-4 font-display">Illusion is Reality</h3>
-                        <p class="text-slate-400 leading-relaxed mb-4">
-                            In the algorithm's eye, numbers are the only language. We speak that language fluently.
-                        </p>
-                        <p class="text-slate-400 leading-relaxed">
-                            "Smart Media Point" isn't just about bots; it's about <strong class="text-brand-techno">momentum</strong>. A high follower count triggers the bandwagon effect, converting real visitors into real followers.
-                        </p>
-                    </div>
-                    <!-- Decorative techno lines -->
-                    <div class="absolute -bottom-6 -right-6 w-32 h-32 border-b-2 border-r-2 border-brand-purple/30 rounded-br-3xl -z-0"></div>
+    <!-- MAIN HOME PAGE CONTENT -->
+    <div id="home-page" class="page-section page-visible">
+        <!-- Hero Section -->
+        <header class="relative pt-36 pb-12 lg:pt-52 lg:pb-24 px-6 overflow-hidden">
+            <div class="container mx-auto text-center relative z-10 reveal-on-scroll">
+                <div class="inline-block mb-6 px-4 py-1 rounded-full border border-brand-techno/30 bg-brand-techno/10 backdrop-blur-sm reveal-on-scroll" style="transition-delay: 100ms;">
+                    <span class="text-xs font-bold font-tech tracking-wider text-brand-cyan uppercase"><i class="fa-solid fa-bolt mr-2"></i>Next Gen SMM Panel</span>
                 </div>
                 
-                <div>
-                    <h2 class="text-3xl md:text-5xl font-display font-bold mb-8 reveal-on-scroll">Why <span class="text-brand-cyan">Smart Media?</span></h2>
-                    <div class="space-y-8">
-                        <div class="flex items-start group reveal-on-scroll" style="transition-delay: 100ms;">
-                            <div class="bg-brand-mid border border-brand-techno/20 p-4 rounded-xl mr-5 text-brand-techno group-hover:bg-brand-techno group-hover:text-white transition-all shadow-[0_0_15px_rgba(59,130,246,0.15)]">
-                                <i class="fa-solid fa-bolt text-xl"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-xl font-bold mb-2 font-display text-white">Instant Velocity</h4>
-                                <p class="text-slate-400 text-sm">Automated systems trigger immediately. No waiting rooms.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start group reveal-on-scroll" style="transition-delay: 200ms;">
-                            <div class="bg-brand-mid border border-brand-techno/20 p-4 rounded-xl mr-5 text-brand-cyan group-hover:bg-brand-cyan group-hover:text-white transition-all shadow-[0_0_15px_rgba(6,182,212,0.15)]">
-                                <i class="fa-solid fa-user-shield text-xl"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-xl font-bold mb-2 font-display text-white">Stealth Mode</h4>
-                                <p class="text-slate-400 text-sm">100% anonymous. We build the fame, you take the credit.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start group reveal-on-scroll" style="transition-delay: 300ms;">
-                            <div class="bg-brand-mid border border-brand-techno/20 p-4 rounded-xl mr-5 text-brand-purple group-hover:bg-brand-purple group-hover:text-white transition-all shadow-[0_0_15px_rgba(139,92,246,0.15)]">
-                                <i class="fa-solid fa-infinity text-xl"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-xl font-bold mb-2 font-display text-white">Visual Dominance</h4>
-                                <p class="text-slate-400 text-sm">Packages curated to maximize aesthetic authority on any profile.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Plans Section -->
-    <section id="plans" class="py-24 px-6 relative bg-gradient-to-b from-transparent to-[#0f172a]/50">
-        <div class="container mx-auto">
-            <div class="text-center mb-20 reveal-on-scroll">
-                <span class="text-brand-cyan font-bold tracking-widest text-sm uppercase mb-2 block font-tech">Select Your Level</span>
-                <h2 class="text-4xl md:text-5xl font-display font-bold mb-4">Pricing <span class="text-brand-techno">Matrix</span></h2>
-                <p class="text-slate-400">Transparent tiers. Calculate your potential.</p>
-            </div>
-
-            <!-- Grid for Plans -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+                <h1 class="text-5xl md:text-7xl font-display font-extrabold mb-6 leading-tight reveal-on-scroll" style="transition-delay: 200ms;">
+                    Skyrocket Your <br>
+                    <span class="inline-block relative h-[1.2em] overflow-hidden align-middle">
+                        <span id="text-rotator" class="text-transparent bg-clip-text bg-gradient-to-r from-brand-techno via-brand-cyan to-brand-purple word-rotate">Social Proof</span>
+                    </span>
+                </h1>
                 
-                <!-- Plan 1: Basic -->
-                <div class="glass-card rounded-2xl p-6 flex flex-col reveal-on-scroll" style="transition-delay: 100ms;">
-                    <div class="mb-4">
-                        <h3 class="text-xl font-bold text-slate-300 font-display">Basic</h3>
-                        <div class="flex items-baseline mt-2">
-                            <span class="text-sm align-top text-slate-500">₹</span>
-                            <span class="text-4xl font-bold tracking-tight text-white font-tech">499</span>
-                        </div>
-                        <p class="text-xs text-slate-500 mt-2 font-mono uppercase">Starter Flex</p>
-                    </div>
-                    <ul class="space-y-4 mb-8 flex-1">
-                        <li class="flex items-center text-sm text-slate-300"><i class="fa-solid fa-users w-6 text-brand-techno"></i> 2,000 Followers</li>
-                        <li class="flex items-center text-sm text-slate-300"><i class="fa-solid fa-heart w-6 text-brand-cyan"></i> 5,000 Likes</li>
-                        <li class="flex items-center text-sm text-slate-300"><i class="fa-solid fa-eye w-6 text-brand-purple"></i> 10,000 Views</li>
-                        <li class="flex items-center text-xs text-slate-500 mt-2 border-t border-slate-700/50 pt-3"><i class="fa-solid fa-triangle-exclamation w-6"></i> Standard Drop Rate</li>
-                    </ul>
-                    <button onclick="orderPlan('Basic', 499)" class="nav-link w-full py-3 rounded-lg border border-slate-700 bg-transparent text-slate-300 hover:bg-white hover:text-black transition-all text-sm font-bold uppercase tracking-wide">Select</button>
+                <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed font-light reveal-on-scroll" style="transition-delay: 300ms;">
+                    We engineer digital status. Impress clients, attract sponsors, and command authority with our premium growth algorithms.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row justify-center gap-4 reveal-on-scroll" style="transition-delay: 400ms;">
+                    <a href="#plans" class="px-8 py-4 rounded-full bg-gradient-to-r from-brand-techno to-brand-cyan text-white font-bold text-lg hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] transition-all transform hover:-translate-y-1 nav-link">
+                        Explore Plans
+                    </a>
+                    <a href="#about" class="px-8 py-4 rounded-full border border-slate-700 bg-slate-900/50 text-white font-semibold text-lg hover:bg-slate-800 transition-colors backdrop-blur-sm nav-link">
+                        How it Works
+                    </a>
                 </div>
 
-                <!-- Plan 2: Pro -->
-                <div class="glass-card rounded-2xl p-6 flex flex-col reveal-on-scroll" style="transition-delay: 200ms;">
-                    <div class="mb-4">
-                        <h3 class="text-xl font-bold text-white font-display">Pro</h3>
-                        <div class="flex items-baseline mt-2">
-                            <span class="text-sm align-top text-slate-500">₹</span>
-                            <span class="text-4xl font-bold tracking-tight text-white font-tech">1,299</span>
+                <!-- Dynamic Count-Up Live Ticker -->
+                <div class="mt-16 flex flex-wrap justify-center gap-6 md:gap-16 text-slate-400 font-tech text-sm uppercase tracking-widest reveal-on-scroll" style="transition-delay: 500ms;">
+                    <div class="flex flex-col items-center p-4 bg-white/5 rounded-xl border border-white/5 backdrop-blur-sm min-w-[150px]">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                            <span class="text-xs text-slate-500">Live Followers</span>
                         </div>
-                        <p class="text-xs text-slate-500 mt-2 font-mono uppercase">Stability Pack</p>
+                        <span id="ticker-followers" class="text-2xl text-white font-bold tracking-tight">100,000</span>
                     </div>
-                    <ul class="space-y-4 mb-8 flex-1">
-                        <li class="flex items-center text-sm text-slate-300"><i class="fa-solid fa-users w-6 text-brand-techno"></i> 5,000 Followers</li>
-                        <li class="flex items-center text-sm text-slate-300"><i class="fa-solid fa-heart w-6 text-brand-cyan"></i> 10,000 Likes</li>
-                        <li class="flex items-center text-sm text-slate-300"><i class="fa-solid fa-eye w-6 text-brand-purple"></i> 20,000 Views</li>
-                        <li class="flex items-center text-xs text-brand-cyan mt-2 border-t border-slate-700/50 pt-3"><i class="fa-solid fa-check-circle w-6"></i> Non-Drop Guarantee</li>
-                    </ul>
-                    <button onclick="orderPlan('Pro', 1299)" class="nav-link w-full py-3 rounded-lg border border-slate-600 bg-slate-800/50 text-white hover:bg-brand-techno hover:border-brand-techno transition-all text-sm font-bold uppercase tracking-wide">Select</button>
+                    <div class="flex flex-col items-center p-4 bg-white/5 rounded-xl border border-white/5 backdrop-blur-sm min-w-[150px]">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <span class="w-2 h-2 rounded-full bg-brand-techno animate-pulse"></span>
+                            <span class="text-xs text-slate-500">Live Likes</span>
+                        </div>
+                        <span id="ticker-likes" class="text-2xl text-white font-bold tracking-tight">5,000,000</span>
+                    </div>
+                    <div class="flex flex-col items-center p-4 bg-white/5 rounded-xl border border-white/5 backdrop-blur-sm min-w-[150px]">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <span class="w-2 h-2 rounded-full bg-brand-cyan animate-pulse"></span>
+                            <span class="text-xs text-slate-500">Live Views</span>
+                        </div>
+                        <span id="ticker-views" class="text-2xl text-white font-bold tracking-tight">10,000,000</span>
+                    </div>
                 </div>
 
-                <!-- Plan 3: Alpha (Popular) -->
-                <div class="glass-card rounded-2xl p-6 flex flex-col transform md:-translate-y-6 shadow-[0_0_30px_rgba(59,130,246,0.15)] relative reveal-on-scroll" style="transition-delay: 300ms; border-color: rgba(59,130,246,0.5);">
-                    <div class="popular-badge text-white shadow-lg uppercase font-tech text-[10px] tracking-wider">Most Popular</div>
-                    <div class="mb-4 mt-2">
-                        <h3 class="text-xl font-bold text-brand-techno font-display">Alpha</h3>
-                        <div class="flex items-baseline mt-2">
-                            <span class="text-sm align-top text-slate-500">₹</span>
-                            <span class="text-4xl font-bold tracking-tight text-white font-tech">2,499</span>
-                        </div>
-                        <p class="text-xs text-slate-500 mt-2 font-mono uppercase">Growth Engine</p>
+                <!-- Stats Counter -->
+                <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-white/5 pt-12 backdrop-blur-sm rounded-2xl mx-auto max-w-5xl reveal-on-scroll" style="transition-delay: 600ms;">
+                    <div class="p-4">
+                        <div class="text-3xl md:text-4xl font-bold text-white mb-1 counter font-tech" data-target="1000" data-suffix="+">0</div>
+                        <div class="text-sm text-brand-cyan uppercase tracking-wide font-semibold">Happy Clients</div>
                     </div>
-                    <ul class="space-y-4 mb-8 flex-1">
-                        <li class="flex items-center text-sm text-white font-medium"><i class="fa-solid fa-users w-6 text-brand-techno"></i> 10,000 Followers</li>
-                        <li class="flex items-center text-sm text-white font-medium"><i class="fa-solid fa-heart w-6 text-brand-cyan"></i> 25,000 Likes</li>
-                        <li class="flex items-center text-sm text-white font-medium"><i class="fa-solid fa-eye w-6 text-brand-purple"></i> 50,000 Views</li>
-                        <li class="flex items-center text-xs text-brand-cyan mt-2 border-t border-slate-700/50 pt-3"><i class="fa-solid fa-check-double w-6"></i> High Retention</li>
-                    </ul>
-                    <button onclick="orderPlan('Alpha', 2499)" class="nav-link w-full py-3 rounded-lg bg-gradient-to-r from-brand-techno to-brand-cyan text-white font-bold hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all text-sm uppercase tracking-wide">Select Alpha</button>
-                </div>
-
-                <!-- Plan 4: Elite -->
-                <div class="glass-card rounded-2xl p-6 flex flex-col reveal-on-scroll" style="transition-delay: 400ms;">
-                    <div class="mb-4">
-                        <h3 class="text-xl font-bold text-white font-display">Elite</h3>
-                        <div class="flex items-baseline mt-2">
-                            <span class="text-sm align-top text-slate-500">₹</span>
-                            <span class="text-4xl font-bold tracking-tight text-white font-tech">5,999</span>
-                        </div>
-                        <p class="text-xs text-slate-500 mt-2 font-mono uppercase">Influencer Tier</p>
+                    <div class="p-4">
+                        <div class="text-3xl md:text-4xl font-bold text-white mb-1 counter font-tech" data-target="50" data-suffix="+">0</div>
+                        <div class="text-sm text-brand-cyan uppercase tracking-wide font-semibold">Million Likes</div>
                     </div>
-                    <ul class="space-y-4 mb-8 flex-1">
-                        <li class="flex items-center text-sm text-slate-300"><i class="fa-solid fa-users w-6 text-brand-techno"></i> 25,000 Followers</li>
-                        <li class="flex items-center text-sm text-slate-300"><i class="fa-solid fa-heart w-6 text-brand-cyan"></i> 50,000 Likes</li>
-                        <li class="flex items-center text-sm text-slate-300"><i class="fa-solid fa-eye w-6 text-brand-purple"></i> 100,000 Views</li>
-                        <li class="flex items-center text-xs text-brand-cyan mt-2 border-t border-slate-700/50 pt-3"><i class="fa-solid fa-crown w-6"></i> Premium Quality</li>
-                    </ul>
-                    <button onclick="orderPlan('Elite', 5999)" class="nav-link w-full py-3 rounded-lg border border-slate-600 bg-slate-800/50 text-white hover:bg-brand-purple hover:border-brand-purple transition-all text-sm font-bold uppercase tracking-wide">Select</button>
-                </div>
-
-                <!-- Plan 5: Celebrity -->
-                <div class="glass-card rounded-2xl p-6 flex flex-col border-brand-cyan/30 reveal-on-scroll" style="transition-delay: 500ms;">
-                    <div class="mb-4">
-                        <h3 class="text-xl font-bold text-brand-cyan font-display">Celebrity</h3>
-                        <div class="flex items-baseline mt-2">
-                            <span class="text-sm align-top text-slate-500">₹</span>
-                            <span class="text-4xl font-bold tracking-tight text-white font-tech">11,999</span>
-                        </div>
-                        <p class="text-xs text-slate-500 mt-2 font-mono uppercase">Star Package</p>
+                    <div class="p-4">
+                        <div class="text-3xl md:text-4xl font-bold text-white mb-1 counter font-tech" data-target="24" data-suffix="+">0</div>
+                        <div class="text-sm text-brand-cyan uppercase tracking-wide font-semibold">Hour Delivery</div>
                     </div>
-                    <ul class="space-y-4 mb-8 flex-1">
-                        <li class="flex items-center text-sm text-slate-300"><i class="fa-solid fa-users w-6 text-brand-techno"></i> 50,000 Followers</li>
-                        <li class="flex items-center text-sm text-slate-300"><i class="fa-solid fa-heart w-6 text-brand-cyan"></i> 100,000 Likes</li>
-                        <li class="flex items-center text-sm text-slate-300"><i class="fa-solid fa-eye w-6 text-brand-purple"></i> 200,000 Views</li>
-                        <li class="flex items-center text-xs text-brand-cyan mt-2 border-t border-slate-700/50 pt-3"><i class="fa-solid fa-star w-6"></i> Lifetime Warranty</li>
-                    </ul>
-                    <button onclick="orderPlan('Celebrity', 11999)" class="nav-link w-full py-3 rounded-lg border border-brand-cyan/50 text-brand-cyan hover:bg-brand-cyan hover:text-black transition-all text-sm font-bold uppercase tracking-wide shadow-[0_0_15px_rgba(6,182,212,0.2)]">Select Celebrity</button>
+                    <div class="p-4">
+                        <div class="text-3xl md:text-4xl font-bold text-white mb-1 counter font-tech" data-target="100" data-suffix="%">0</div>
+                        <div class="text-sm text-brand-cyan uppercase tracking-wide font-semibold">Confidential</div>
+                    </div>
                 </div>
-
             </div>
-        </div>
-    </section>
-
-    <!-- Testimonials -->
-    <section id="testimonials" class="py-24 px-6 relative overflow-hidden">
-        <!-- Abstract BG elements -->
-        <div class="absolute top-0 right-0 w-64 h-64 bg-brand-purple/20 rounded-full blur-[80px] -z-10"></div>
-        <div class="absolute bottom-0 left-0 w-64 h-64 bg-brand-techno/20 rounded-full blur-[80px] -z-10"></div>
-
-        <div class="container mx-auto">
-            <h2 class="text-3xl font-display font-bold text-center mb-16 reveal-on-scroll">Success <span class="text-brand-purple">Stories</span></h2>
             
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- Review 1 -->
-                <div class="glass-card p-8 rounded-2xl reveal-on-scroll" style="transition-delay: 100ms;">
-                    <div class="flex text-brand-cyan mb-4 text-xs">
-                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            <!-- Decorative Glows -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-brand-techno rounded-full blur-[150px] opacity-10 -z-10 animate-pulse-fast"></div>
+        </header>
+
+        <!-- About Section -->
+        <section id="about" class="py-24 px-6 relative">
+            <div class="container mx-auto">
+                <div class="grid md:grid-cols-2 gap-16 items-center">
+                    <div class="relative reveal-on-scroll">
+                        <div class="glass-card p-8 rounded-2xl relative z-10 border-l-4 border-brand-cyan">
+                            <i class="fa-solid fa-layer-group text-4xl text-brand-cyan mb-6"></i>
+                            <h3 class="text-2xl font-bold mb-4 font-display">Illusion is Reality</h3>
+                            <p class="text-slate-400 leading-relaxed mb-4">
+                                In the algorithm's eye, numbers are the only language. We speak that language fluently.
+                            </p>
+                            <p class="text-slate-400 leading-relaxed">
+                                "Smart Media Point" isn't just about bots; it's about <strong class="text-brand-techno">momentum</strong>. A high follower count triggers the bandwagon effect, converting real visitors into real followers.
+                            </p>
+                        </div>
+                        <!-- Decorative techno lines -->
+                        <div class="absolute -bottom-6 -right-6 w-32 h-32 border-b-2 border-r-2 border-brand-purple/30 rounded-br-3xl -z-0"></div>
                     </div>
-                    <p class="text-slate-300 italic mb-6 font-light">"I needed to look professional for a brand sponsorship deal. The Elite package gave my profile the visual weight it needed to close the contract. Highly recommended."</p>
-                    <div class="flex items-center border-t border-white/5 pt-4">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-techno to-brand-purple mr-3 flex items-center justify-center font-bold text-sm">RM</div>
-                        <div>
-                            <h5 class="font-bold text-white text-sm">Rahul M.</h5>
-                            <p class="text-xs text-slate-500 uppercase">Music Artist</p>
+                    
+                    <div>
+                        <h2 class="text-3xl md:text-5xl font-display font-bold mb-8 reveal-on-scroll">Why <span class="text-brand-cyan">Smart Media?</span></h2>
+                        <div class="space-y-8">
+                            <div class="flex items-start group reveal-on-scroll" style="transition-delay: 100ms;">
+                                <div class="bg-brand-mid border border-brand-techno/20 p-4 rounded-xl mr-5 text-brand-techno group-hover:bg-brand-techno group-hover:text-white transition-all shadow-[0_0_15px_rgba(59,130,246,0.15)]">
+                                    <i class="fa-solid fa-bolt text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold mb-2 font-display text-white">Instant Velocity</h4>
+                                    <p class="text-slate-400 text-sm">Automated systems trigger immediately. No waiting rooms.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start group reveal-on-scroll" style="transition-delay: 200ms;">
+                                <div class="bg-brand-mid border border-brand-techno/20 p-4 rounded-xl mr-5 text-brand-cyan group-hover:bg-brand-cyan group-hover:text-white transition-all shadow-[0_0_15px_rgba(6,182,212,0.15)]">
+                                    <i class="fa-solid fa-user-shield text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold mb-2 font-display text-white">Stealth Mode</h4>
+                                    <p class="text-slate-400 text-sm">100% anonymous. We build the fame, you take the credit.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start group reveal-on-scroll" style="transition-delay: 300ms;">
+                                <div class="bg-brand-mid border border-brand-techno/20 p-4 rounded-xl mr-5 text-brand-purple group-hover:bg-brand-purple group-hover:text-white transition-all shadow-[0_0_15px_rgba(139,92,246,0.15)]">
+                                    <i class="fa-solid fa-infinity text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold mb-2 font-display text-white">Visual Dominance</h4>
+                                    <p class="text-slate-400 text-sm">Packages curated to maximize aesthetic authority on any profile.</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </section>
 
-                <!-- Review 2 -->
-                <div class="glass-card p-8 rounded-2xl reveal-on-scroll" style="transition-delay: 200ms;">
-                    <div class="flex text-brand-cyan mb-4 text-xs">
-                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        <!-- Plans Section -->
+        <section id="plans" class="py-24 px-6 relative bg-gradient-to-b from-transparent to-[#0f172a]/50">
+            <div class="container mx-auto">
+                <div class="text-center mb-20 reveal-on-scroll">
+                    <span class="text-brand-cyan font-bold tracking-widest text-sm uppercase mb-2 block font-tech">Select Your Level</span>
+                    <h2 class="text-4xl md:text-5xl font-display font-bold mb-4">Pricing <span class="text-brand-techno">Matrix</span></h2>
+                    <p class="text-slate-400">Transparent tiers. Calculate your potential.</p>
+                </div>
+
+                <!-- Grid for Plans -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+                    
+                    <!-- Plan 1: Basic -->
+                    <div class="glass-card rounded-2xl p-6 flex flex-col reveal-on-scroll" style="transition-delay: 100ms;">
+                        <div class="mb-4">
+                            <h3 class="text-xl font-bold text-slate-300 font-display">Basic</h3>
+                            <div class="flex items-baseline mt-2">
+                                <span class="text-sm align-top text-slate-500">₹</span>
+                                <span class="text-4xl font-bold tracking-tight text-white font-tech">499</span>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-2 font-mono uppercase">Starter Flex</p>
+                        </div>
+                        <ul class="space-y-4 mb-8 flex-1">
+                            <li class="flex items-center text-sm text-slate-300"><i class="fa-solid fa-users w-6 text-brand-techno"></i> 2,000 Followers</li>
+                            <li class="flex items-center text-sm text-slate-300"><i class="fa-solid fa-heart w-6 text-brand-cyan"></i> 5,000 Likes</li>
+                            <li class="flex items-center text-sm text-slate-300"><i class="fa-solid fa-eye w-6 text-brand-purple"></i> 10,000 Views</li>
+                        </ul>
+                        <button onclick="showPlanDetails('Basic')" class="nav-link w-full py-3 rounded-lg border border-slate-700 bg-transparent text-slate-300 hover:bg-white hover:text-black transition-all text-sm font-bold uppercase tracking-wide">Select</button>
                     </div>
-                    <p class="text-slate-300 italic mb-6 font-light">"Super fast delivery. I used the Alpha pack to kickstart my clothing brand page. It instantly made the shop look established and trustworthy."</p>
-                    <div class="flex items-center border-t border-white/5 pt-4">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-cyan to-white mr-3 flex items-center justify-center font-bold text-sm text-black">SK</div>
-                        <div>
-                            <h5 class="font-bold text-white text-sm">Sarah K.</h5>
-                            <p class="text-xs text-slate-500 uppercase">Boutique Owner</p>
+
+                    <!-- Plan 2: Pro -->
+                    <div class="glass-card rounded-2xl p-6 flex flex-col reveal-on-scroll" style="transition-delay: 200ms;">
+                        <div class="mb-4">
+                            <h3 class="text-xl font-bold text-white font-display">Pro</h3>
+                            <div class="flex items-baseline mt-2">
+                                <span class="text-sm align-top text-slate-500">₹</span>
+                                <span class="text-4xl font-bold tracking-tight text-white font-tech">1,299</span>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-2 font-mono uppercase">Stability Pack</p>
+                        </div>
+                        <ul class="space-y-4 mb-8 flex-1">
+                            <li class="flex items-center text-sm text-slate-300"><i class="fa-solid fa-users w-6 text-brand-techno"></i> 5,000 Followers</li>
+                            <li class="flex items-center text-sm text-slate-300"><i class="fa-solid fa-heart w-6 text-brand-cyan"></i> 10,000 Likes</li>
+                            <li class="flex items-center text-sm text-slate-300"><i class="fa-solid fa-eye w-6 text-brand-purple"></i> 20,000 Views</li>
+                        </ul>
+                        <button onclick="showPlanDetails('Pro')" class="nav-link w-full py-3 rounded-lg border border-slate-600 bg-slate-800/50 text-white hover:bg-brand-techno hover:border-brand-techno transition-all text-sm font-bold uppercase tracking-wide">Select</button>
+                    </div>
+
+                    <!-- Plan 3: Alpha -->
+                    <div class="glass-card rounded-2xl p-6 flex flex-col transform md:-translate-y-6 shadow-[0_0_30px_rgba(59,130,246,0.15)] relative reveal-on-scroll" style="transition-delay: 300ms; border-color: rgba(59,130,246,0.5);">
+                        <div class="popular-badge text-white shadow-lg uppercase font-tech text-[10px] tracking-wider">Most Popular</div>
+                        <div class="mb-4 mt-2">
+                            <h3 class="text-xl font-bold text-brand-techno font-display">Alpha</h3>
+                            <div class="flex items-baseline mt-2">
+                                <span class="text-sm align-top text-slate-500">₹</span>
+                                <span class="text-4xl font-bold tracking-tight text-white font-tech">2,499</span>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-2 font-mono uppercase">Growth Engine</p>
+                        </div>
+                        <ul class="space-y-4 mb-8 flex-1">
+                            <li class="flex items-center text-sm text-white font-medium"><i class="fa-solid fa-users w-6 text-brand-techno"></i> 10,000 Followers</li>
+                            <li class="flex items-center text-sm text-white font-medium"><i class="fa-solid fa-heart w-6 text-brand-cyan"></i> 25,000 Likes</li>
+                            <li class="flex items-center text-sm text-white font-medium"><i class="fa-solid fa-eye w-6 text-brand-purple"></i> 50,000 Views</li>
+                        </ul>
+                        <button onclick="showPlanDetails('Alpha')" class="nav-link w-full py-3 rounded-lg bg-gradient-to-r from-brand-techno to-brand-cyan text-white font-bold hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all text-sm uppercase tracking-wide">Select Alpha</button>
+                    </div>
+
+                    <!-- Plan 4: Elite -->
+                    <div class="glass-card rounded-2xl p-6 flex flex-col reveal-on-scroll" style="transition-delay: 400ms;">
+                        <div class="mb-4">
+                            <h3 class="text-xl font-bold text-white font-display">Elite</h3>
+                            <div class="flex items-baseline mt-2">
+                                <span class="text-sm align-top text-slate-500">₹</span>
+                                <span class="text-4xl font-bold tracking-tight text-white font-tech">5,999</span>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-2 font-mono uppercase">Influencer Tier</p>
+                        </div>
+                        <ul class="space-y-4 mb-8 flex-1">
+                            <li class="flex items-center text-sm text-slate-300"><i class="fa-solid fa-users w-6 text-brand-techno"></i> 25,000 Followers</li>
+                            <li class="flex items-center text-sm text-slate-300"><i class="fa-solid fa-heart w-6 text-brand-cyan"></i> 50,000 Likes</li>
+                            <li class="flex items-center text-sm text-slate-300"><i class="fa-solid fa-eye w-6 text-brand-purple"></i> 100,000 Views</li>
+                        </ul>
+                        <button onclick="showPlanDetails('Elite')" class="nav-link w-full py-3 rounded-lg border border-slate-600 bg-slate-800/50 text-white hover:bg-brand-purple hover:border-brand-purple transition-all text-sm font-bold uppercase tracking-wide">Select</button>
+                    </div>
+
+                    <!-- Plan 5: Celebrity -->
+                    <div class="glass-card rounded-2xl p-6 flex flex-col border-brand-cyan/30 reveal-on-scroll" style="transition-delay: 500ms;">
+                        <div class="mb-4">
+                            <h3 class="text-xl font-bold text-brand-cyan font-display">Celebrity</h3>
+                            <div class="flex items-baseline mt-2">
+                                <span class="text-sm align-top text-slate-500">₹</span>
+                                <span class="text-4xl font-bold tracking-tight text-white font-tech">11,999</span>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-2 font-mono uppercase">Star Package</p>
+                        </div>
+                        <ul class="space-y-4 mb-8 flex-1">
+                            <li class="flex items-center text-sm text-slate-300"><i class="fa-solid fa-users w-6 text-brand-techno"></i> 50,000 Followers</li>
+                            <li class="flex items-center text-sm text-slate-300"><i class="fa-solid fa-heart w-6 text-brand-cyan"></i> 100,000 Likes</li>
+                            <li class="flex items-center text-sm text-slate-300"><i class="fa-solid fa-eye w-6 text-brand-purple"></i> 200,000 Views</li>
+                        </ul>
+                        <button onclick="showPlanDetails('Celebrity')" class="nav-link w-full py-3 rounded-lg border border-brand-cyan/50 text-brand-cyan hover:bg-brand-cyan hover:text-black transition-all text-sm font-bold uppercase tracking-wide shadow-[0_0_15px_rgba(6,182,212,0.2)]">Select Celebrity</button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials -->
+        <section id="testimonials" class="py-24 px-6 relative overflow-hidden">
+            <!-- Abstract BG elements -->
+            <div class="absolute top-0 right-0 w-64 h-64 bg-brand-purple/20 rounded-full blur-[80px] -z-10"></div>
+            <div class="absolute bottom-0 left-0 w-64 h-64 bg-brand-techno/20 rounded-full blur-[80px] -z-10"></div>
+
+            <div class="container mx-auto">
+                <h2 class="text-3xl font-display font-bold text-center mb-16 reveal-on-scroll">Success <span class="text-brand-purple">Stories</span></h2>
+                
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Review 1 -->
+                    <div class="glass-card p-8 rounded-2xl reveal-on-scroll" style="transition-delay: 100ms;">
+                        <div class="flex text-brand-cyan mb-4 text-xs">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-slate-300 italic mb-6 font-light">"I needed to look professional for a brand sponsorship deal. The Elite package gave my profile the visual weight it needed to close the contract. Highly recommended."</p>
+                        <div class="flex items-center border-t border-white/5 pt-4">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-techno to-brand-purple mr-3 flex items-center justify-center font-bold text-sm">RM</div>
+                            <div>
+                                <h5 class="font-bold text-white text-sm">Rahul M.</h5>
+                                <p class="text-xs text-slate-500 uppercase">Music Artist</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review 2 -->
+                    <div class="glass-card p-8 rounded-2xl reveal-on-scroll" style="transition-delay: 200ms;">
+                        <div class="flex text-brand-cyan mb-4 text-xs">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-slate-300 italic mb-6 font-light">"Super fast delivery. I used the Alpha pack to kickstart my clothing brand page. It instantly made the shop look established and trustworthy."</p>
+                        <div class="flex items-center border-t border-white/5 pt-4">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-cyan to-white mr-3 flex items-center justify-center font-bold text-sm text-black">SK</div>
+                            <div>
+                                <h5 class="font-bold text-white text-sm">Sarah K.</h5>
+                                <p class="text-xs text-slate-500 uppercase">Boutique Owner</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review 3 -->
+                    <div class="glass-card p-8 rounded-2xl reveal-on-scroll" style="transition-delay: 300ms;">
+                        <div class="flex text-brand-cyan mb-4 text-xs">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                        </div>
+                        <p class="text-slate-300 italic mb-6 font-light">"Honest service. They explained exactly what I was getting. The 'Pro' package hasn't dropped a bit in 2 months. Great for perception."</p>
+                        <div class="flex items-center border-t border-white/5 pt-4">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-purple to-pink-500 mr-3 flex items-center justify-center font-bold text-sm">AD</div>
+                            <div>
+                                <h5 class="font-bold text-white text-sm">Arjun D.</h5>
+                                <p class="text-xs text-slate-500 uppercase">Content Creator</p>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </section>
+    </div> <!-- End Home Page -->
 
-                <!-- Review 3 -->
-                <div class="glass-card p-8 rounded-2xl reveal-on-scroll" style="transition-delay: 300ms;">
-                    <div class="flex text-brand-cyan mb-4 text-xs">
-                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+    <!-- DYNAMIC PLAN DETAILS PAGE (Hidden by default) -->
+    <div id="plan-details-page" class="page-section page-hidden min-h-screen pt-32 pb-20 px-6">
+        <div class="container mx-auto max-w-4xl">
+            <!-- Back Button -->
+            <button onclick="showHome()" class="mb-8 flex items-center text-slate-400 hover:text-brand-cyan transition-colors group nav-link">
+                <i class="fa-solid fa-arrow-left mr-2 group-hover:-translate-x-1 transition-transform"></i> Back to Packages
+            </button>
+
+            <div class="glass-card rounded-3xl p-8 md:p-12 border-t border-brand-techno/20 relative overflow-hidden">
+                <!-- Background Glow -->
+                <div class="absolute top-0 right-0 w-64 h-64 bg-brand-techno/10 rounded-full blur-[80px] -z-10"></div>
+                
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div>
+                        <div class="inline-block mb-4 px-3 py-1 rounded-full bg-slate-800/50 border border-slate-700">
+                            <span id="detail-tagline" class="text-xs font-bold font-tech tracking-wider text-brand-purple uppercase">STARTER FLEX</span>
+                        </div>
+                        <h1 id="detail-title" class="text-4xl md:text-5xl font-display font-bold mb-4 text-white">Basic Plan</h1>
+                        <div class="flex items-baseline mb-6">
+                            <span class="text-lg text-slate-400 mr-1">Price:</span>
+                            <span class="text-sm align-top text-slate-500">₹</span>
+                            <span id="detail-price" class="text-4xl font-bold tracking-tight text-brand-cyan font-tech">499</span>
+                        </div>
+                        <p id="detail-description" class="text-slate-400 leading-relaxed mb-8">
+                            This package is designed for new accounts looking to dip their toes into social growth. Great for testing the waters and seeing immediate visual changes on your profile.
+                        </p>
+                        
+                        <div class="space-y-4 mb-8">
+                            <h4 class="text-white font-bold uppercase text-sm tracking-wide border-b border-slate-700 pb-2">Package Includes:</h4>
+                            <ul id="detail-features" class="space-y-3">
+                                <!-- Features populated via JS -->
+                            </ul>
+                        </div>
                     </div>
-                    <p class="text-slate-300 italic mb-6 font-light">"Honest service. They explained exactly what I was getting. The 'Pro' package hasn't dropped a bit in 2 months. Great for perception."</p>
-                    <div class="flex items-center border-t border-white/5 pt-4">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-purple to-pink-500 mr-3 flex items-center justify-center font-bold text-sm">AD</div>
-                        <div>
-                            <h5 class="font-bold text-white text-sm">Arjun D.</h5>
-                            <p class="text-xs text-slate-500 uppercase">Content Creator</p>
+
+                    <div class="flex flex-col justify-center bg-slate-900/50 rounded-2xl p-6 border border-slate-800">
+                        <div class="text-center mb-6">
+                            <i class="fa-brands fa-whatsapp text-5xl text-[#25D366] mb-4"></i>
+                            <h3 class="text-xl font-bold text-white">Ready to Boost?</h3>
+                            <p class="text-sm text-slate-500 mt-2">Order securely via WhatsApp with our support agent.</p>
+                        </div>
+                        
+                        <a id="detail-whatsapp-link" href="#" target="_blank" class="nav-link block w-full py-4 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-center transition-all shadow-lg hover:shadow-[#25D366]/30 transform hover:-translate-y-1 mb-4">
+                            <i class="fa-brands fa-whatsapp mr-2"></i> Order Now on WhatsApp
+                        </a>
+                        
+                        <div class="text-center">
+                            <p class="text-xs text-slate-600">
+                                <i class="fa-solid fa-lock mr-1"></i> No Password Required
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Footer -->
+    <!-- Footer (Shared) -->
     <footer id="contact" class="bg-[#020617] py-16 px-6 border-t border-white/5 relative z-10 reveal-on-scroll">
         <div class="container mx-auto">
             <div class="grid md:grid-cols-4 gap-12 mb-12">
@@ -621,8 +695,8 @@
                 <div>
                     <h4 class="font-bold text-white mb-6 font-tech uppercase tracking-wide">Quick Links</h4>
                     <ul class="space-y-3 text-sm text-slate-500">
-                        <li><a href="#plans" class="nav-link hover:text-brand-techno transition-colors">Pricing Matrix</a></li>
-                        <li><a href="#about" class="nav-link hover:text-brand-techno transition-colors">System Overview</a></li>
+                        <li><a href="#plans" onclick="showHome()" class="nav-link hover:text-brand-techno transition-colors">Pricing Matrix</a></li>
+                        <li><a href="#about" onclick="showHome()" class="nav-link hover:text-brand-techno transition-colors">System Overview</a></li>
                         <li><a href="#" class="nav-link hover:text-brand-techno transition-colors">Terms of Service</a></li>
                         <li><a href="#" class="nav-link hover:text-brand-techno transition-colors">Refund Policy</a></li>
                     </ul>
@@ -640,46 +714,8 @@
         </div>
     </footer>
 
-    <!-- Order Modal -->
-    <div id="orderModal" class="fixed inset-0 z-[100] hidden">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeModal()"></div>
-        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md p-4">
-            <div class="bg-[#0f172a] border border-brand-techno/30 rounded-2xl p-8 shadow-[0_0_50px_rgba(59,130,246,0.2)] relative">
-                <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-500 hover:text-white nav-link"><i class="fa-solid fa-xmark text-xl"></i></button>
-                
-                <h3 class="text-2xl font-bold mb-2 font-display">Confirm Selection</h3>
-                <div class="bg-slate-900 rounded-lg p-4 mb-6 border border-slate-800">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-slate-400">Plan Node:</span>
-                        <span id="modalPlanName" class="font-bold text-brand-techno font-tech">Basic</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-slate-400">Value:</span>
-                        <span id="modalPlanPrice" class="font-bold text-white text-xl">₹499</span>
-                    </div>
-                </div>
-
-                <form onsubmit="event.preventDefault(); alert('Redirecting to secure gateway...'); closeModal();">
-                    <div class="space-y-4 mb-6">
-                        <div>
-                            <label class="block text-xs uppercase tracking-wide text-slate-500 mb-2 font-bold">Target Link</label>
-                            <input type="text" placeholder="@username" class="nav-link w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-cyan transition-colors" required>
-                        </div>
-                        <div>
-                            <label class="block text-xs uppercase tracking-wide text-slate-500 mb-2 font-bold">Email</label>
-                            <input type="email" placeholder="you@example.com" class="nav-link w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-cyan transition-colors" required>
-                        </div>
-                    </div>
-                    <button type="submit" class="nav-link w-full py-4 rounded-lg bg-gradient-to-r from-brand-techno to-brand-cyan text-white font-bold hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all shadow-lg uppercase tracking-wide text-sm">
-                        Initialize Payment
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-
     <!-- Floating Buttons -->
-    <a href="https://wa.me/" target="_blank" class="float-btn whatsapp-btn nav-link">
+    <a href="https://wa.me/919353148310" target="_blank" class="float-btn whatsapp-btn nav-link">
         <i class="fa-brands fa-whatsapp"></i>
     </a>
 
@@ -689,6 +725,114 @@
 
     <!-- JavaScript logic -->
     <script>
+        // --- Plan Data Configuration ---
+        const plansData = {
+            'Basic': {
+                price: 499,
+                tagline: 'STARTER FLEX',
+                description: 'The perfect entry point for personal accounts. Instantly boost your numbers to look more active and popular. Please note that this tier prioritizes speed over long-term retention.',
+                features: [
+                    { icon: 'fa-users', text: '2,000 Followers', color: 'text-brand-techno' },
+                    { icon: 'fa-heart', text: '5,000 Likes', color: 'text-brand-cyan' },
+                    { icon: 'fa-eye', text: '10,000 Views', color: 'text-brand-purple' },
+                    { icon: 'fa-clock', text: 'Starts in 1-2 Hours', color: 'text-slate-400' },
+                    { icon: 'fa-triangle-exclamation', text: 'Standard Quality (May Drop)', color: 'text-yellow-500' }
+                ]
+            },
+            'Pro': {
+                price: 1299,
+                tagline: 'STABILITY PACK',
+                description: 'Designed for emerging creators who need reliability. This plan uses our "High-Stability" servers which minimizes drop rates significantly compared to the Basic plan.',
+                features: [
+                    { icon: 'fa-users', text: '5,000 Followers', color: 'text-brand-techno' },
+                    { icon: 'fa-heart', text: '10,000 Likes', color: 'text-brand-cyan' },
+                    { icon: 'fa-eye', text: '20,000 Views', color: 'text-brand-purple' },
+                    { icon: 'fa-bolt', text: 'Instant Start', color: 'text-brand-glow' },
+                    { icon: 'fa-check-circle', text: 'Non-Drop Guarantee (30 Days)', color: 'text-emerald-400' }
+                ]
+            },
+            'Alpha': {
+                price: 2499,
+                tagline: 'GROWTH ENGINE',
+                description: 'Our most popular plan for a reason. It provides a massive injection of engagement that can help trigger organic algorithm visibility. High retention and premium profiles.',
+                features: [
+                    { icon: 'fa-users', text: '10,000 Followers', color: 'text-brand-techno' },
+                    { icon: 'fa-heart', text: '25,000 Likes', color: 'text-brand-cyan' },
+                    { icon: 'fa-eye', text: '50,000 Views', color: 'text-brand-purple' },
+                    { icon: 'fa-rocket', text: 'Viral Velocity', color: 'text-brand-glow' },
+                    { icon: 'fa-check-double', text: 'High Retention + Refill', color: 'text-emerald-400' }
+                ]
+            },
+            'Elite': {
+                price: 5999,
+                tagline: 'INFLUENCER TIER',
+                description: 'Serious numbers for serious brands. This package delivers influencer-level metrics that command respect and higher sponsorship rates. Delivered with a natural-looking velocity.',
+                features: [
+                    { icon: 'fa-users', text: '25,000 Followers', color: 'text-brand-techno' },
+                    { icon: 'fa-heart', text: '50,000 Likes', color: 'text-brand-cyan' },
+                    { icon: 'fa-eye', text: '100,000 Views', color: 'text-brand-purple' },
+                    { icon: 'fa-crown', text: 'Premium Profiles', color: 'text-amber-400' },
+                    { icon: 'fa-shield-halved', text: 'Priority Support', color: 'text-emerald-400' }
+                ]
+            },
+            'Celebrity': {
+                price: 11999,
+                tagline: 'STAR PACKAGE',
+                description: 'The ultimate authority package. Dominate your niche with numbers that rival celebrities. Includes a dedicated account manager and our highest quality "Real-Look" profiles.',
+                features: [
+                    { icon: 'fa-users', text: '50,000 Followers', color: 'text-brand-techno' },
+                    { icon: 'fa-heart', text: '100,000 Likes', color: 'text-brand-cyan' },
+                    { icon: 'fa-eye', text: '200,000 Views', color: 'text-brand-purple' },
+                    { icon: 'fa-star', text: 'Lifetime Warranty', color: 'text-amber-400' },
+                    { icon: 'fa-user-tie', text: 'Dedicated Account Manager', color: 'text-emerald-400' }
+                ]
+            }
+        };
+
+        // --- SPA Navigation Logic ---
+        function showPlanDetails(planName) {
+            const data = plansData[planName];
+            if (!data) return;
+
+            // Populate Data
+            document.getElementById('detail-title').innerText = planName + ' Plan';
+            document.getElementById('detail-price').innerText = data.price.toLocaleString();
+            document.getElementById('detail-tagline').innerText = data.tagline;
+            document.getElementById('detail-description').innerText = data.description;
+            
+            // Populate Features
+            const featureList = document.getElementById('detail-features');
+            featureList.innerHTML = '';
+            data.features.forEach(feat => {
+                const li = document.createElement('li');
+                li.className = 'flex items-center text-sm text-slate-300';
+                li.innerHTML = `<i class="fa-solid ${feat.icon} w-6 ${feat.color}"></i> ${feat.text}`;
+                featureList.appendChild(li);
+            });
+
+            // Update WhatsApp Link
+            const message = `Hello, I want to buy the ${planName} package for Rs.${data.price}.`;
+            const waLink = `https://wa.me/919353148310?text=${encodeURIComponent(message)}`;
+            document.getElementById('detail-whatsapp-link').href = waLink;
+
+            // Switch Views
+            document.getElementById('home-page').classList.remove('page-visible');
+            document.getElementById('home-page').classList.add('page-hidden');
+            
+            document.getElementById('plan-details-page').classList.remove('page-hidden');
+            document.getElementById('plan-details-page').classList.add('page-visible');
+            
+            window.scrollTo(0, 0);
+        }
+
+        function showHome() {
+            document.getElementById('plan-details-page').classList.remove('page-visible');
+            document.getElementById('plan-details-page').classList.add('page-hidden');
+            
+            document.getElementById('home-page').classList.remove('page-hidden');
+            document.getElementById('home-page').classList.add('page-visible');
+        }
+
         // --- Preloader Logic ---
         window.addEventListener('load', () => {
             const preloader = document.getElementById('preloader');
@@ -781,26 +925,22 @@
         const textElement = document.getElementById('text-rotator');
 
         setInterval(() => {
-            // Step 1: Slide OUT (Up)
             textElement.classList.remove('slide-in');
             textElement.classList.add('slide-out');
 
             setTimeout(() => {
-                // Step 2: Change Text & Reset Position Instantly (Down)
                 wordIndex = (wordIndex + 1) % words.length;
                 textElement.innerText = words[wordIndex];
-                
                 textElement.classList.remove('slide-out');
-                textElement.classList.add('slide-in-prep'); // Teleport to bottom
+                textElement.classList.add('slide-in-prep'); 
 
-                // Step 3: Slide IN (Up to Center)
                 requestAnimationFrame(() => {
                     setTimeout(() => {
                         textElement.classList.remove('slide-in-prep');
                         textElement.classList.add('slide-in');
-                    }, 50); // Small delay to ensure browser registered the teleport
+                    }, 50); 
                 });
-            }, 500); // Matches transition duration
+            }, 500); 
         }, 3000); 
 
         // --- Dynamic Live Ticker (Infinite Up) ---
@@ -809,24 +949,21 @@
             const el = document.getElementById(id);
             
             setInterval(() => {
-                // Randomly add to the count
                 current += Math.floor(Math.random() * incrementBase) + 1; 
                 el.innerText = current.toLocaleString();
-            }, 100); // Fast updates (10 times a second)
+            }, 100); 
         }
 
-        // Initialize counters with starting values
         startLiveTicker('ticker-followers', 100000, 15);
         startLiveTicker('ticker-likes', 5000000, 250);
         startLiveTicker('ticker-views', 10000000, 500);
-
 
         // --- Scroll Animations (Fade In) ---
         const scrollElements = document.querySelectorAll('.reveal-on-scroll');
         const handleScrollAnimation = () => {
             scrollElements.forEach((el) => {
                 const elementTop = el.getBoundingClientRect().top;
-                const elementVisible = 100; // Trigger slightly earlier
+                const elementVisible = 100;
                 if (elementTop < window.innerHeight - elementVisible) {
                     el.classList.add('is-visible');
                 }
@@ -894,25 +1031,6 @@
         });
         const statsSection = document.querySelector('.counter');
         if(statsSection) statsObserver.observe(statsSection);
-
-
-        // --- Order Modal Logic ---
-        const modal = document.getElementById('orderModal');
-        const planNameSpan = document.getElementById('modalPlanName');
-        const planPriceSpan = document.getElementById('modalPlanPrice');
-
-        function orderPlan(name, price) {
-            planNameSpan.innerText = name;
-            planPriceSpan.innerText = `₹${price}`;
-            modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden'; 
-        }
-
-        function closeModal() {
-            modal.classList.add('hidden');
-            document.body.style.overflow = 'auto'; 
-        }
     </script>
 </body>
 </html>
-
